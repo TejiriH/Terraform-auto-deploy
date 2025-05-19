@@ -30,8 +30,11 @@ resource "random_password" "db_password" {
 }
 
 resource "aws_secretsmanager_secret" "db_secret" {
-  name = "${var.project}-db-secret"
+  name                         = "${var.project}-db-secret"
+  recovery_window_in_days      = 0
+  force_delete_without_recovery = true
 }
+
 
 resource "aws_secretsmanager_secret_version" "db_secret_version" {
   secret_id     = aws_secretsmanager_secret.db_secret.id
