@@ -51,3 +51,12 @@ module "app_ec2" {
   key_name           = var.key_name
 }
 
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-bucket-9159"      # ✅ Use your actual bucket name
+    key            = "main/terraform.tfstate"           # ✅ Path to state file in S3
+    region         = "eu-north-1"                       # ✅ Region where bucket/table exist
+    dynamodb_table = "terraform-locks"                  # ✅ For state locking
+    encrypt        = true
+  }
+}

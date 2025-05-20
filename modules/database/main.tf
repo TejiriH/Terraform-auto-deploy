@@ -29,16 +29,23 @@ resource "random_password" "db_password" {
   special = true
 }
 
-resource "aws_secretsmanager_secret" "db_secret" {
-  name                    = "${var.project}-db-secret"
+resource "aws_ssm_parameter" "db_password" {
+  name  = "/${var.project}/db_password"
+  type  = "SecureString"
+  value = random_password.db_password.result
+
+  tags = {
+    Name = "${var.project}-db-password"
+  }
 }
 
+resource "aws_ssm_parameter" "db_username" {
+  name  = "/${var.project}/db_username"
+  type  = "String"
+  value = var.db_username
 
-
-resource "aws_secretsmanager_secret_version" "db_secret_version" {
-  secret_id     = aws_secretsmanager_secret.db_secret.id
-  secret_string = jsonencode({
-    username = var.db_username
-    password = random_password.db_password.result
-  })
+  tags = {
+    Name = "${var.project}-db-username"
+  }
 }
+
